@@ -1,0 +1,88 @@
+# swagger.yml
+
+openapi: 3.0.0
+info:
+  title: Titanic Passenger Data API
+  version: 1.0.0
+
+servers:
+  - url: "/api"
+
+
+components:
+  schemas:
+    Passenger:
+      type: object
+      properties:
+        PassengerId:
+          type: integer
+        Name:
+          type: string
+        Age:
+          type: number
+        Sex:
+          type: string
+        Fare:
+          type: number
+
+  parameters:
+    PassengerIdParam:
+      name: passenger_id
+      in: path
+      description: Passenger ID
+      required: true
+      schema:
+        type: integer
+    AttributesParam:
+      name: attributes
+      in: query
+      description: Comma-separated list of attributes (ex. Name,Age,Sex)
+      required: true
+      schema:
+        type: array
+        items:
+          type: string
+
+paths:
+  /passengers:
+    get:
+      summary: Get the list of all passengers.
+      operationId: "passengers.get_all_passengers"
+      tags:
+        - "passengers"
+      responses:
+        200:
+          description: List of all passengers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Passenger"
+
+
+
+  /passengers/{passenger_id}:
+    get:
+      summary: Get passenger data by PassengerId.
+      operationId: "passengers.get_passenger"
+      tags:
+        - "passengers"
+      parameters:
+        - $ref: "#/components/parameters/PassengerIdParam"
+      responses:
+        200:
+          description: Passenger data
+
+  /passengers/{passenger_id}/attributes:
+    get:
+      summary: Get requested attribute list from passenger data by PassengerId.
+      operationId: "passengers.get_passenger_attributes"
+      tags:
+        - "passengers"
+      parameters:
+        - $ref: "#/components/parameters/PassengerIdParam"
+        - $ref: "#/components/parameters/AttributesParam"
+      responses:
+        200:
+          description: Requested attributes from passenger data
